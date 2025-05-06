@@ -2,26 +2,29 @@
 pragma solidity ^0.8.29;
 
 contract SimpleBank {
-    mapping(address => uint256) private balances;
-    mapping(address => bool) private isRegistered;
+    // Mapping to store user balances
+    mapping(address => uint) private balances;
 
-    event Deposit(address indexed account, uint256 amount);
-    event Withdraw(address indexed account, uint256 amount);
-
-    modifier onlyRegistered() {
-        require(isRegistered[msg.sender], "Not registered");
-        _;
+    // Function to set the balance for the sender
+    function setBalance(uint amount) public {
+        balances[msg.sender] = amount;
     }
 
-    function register() public {
-        require(!isRegistered[msg.sender], "Already registered");
-        isRegistered[msg.sender] = true;
+    // Function to get the balance of the sender
+    function getBalance() public view returns (uint) {
+        return balances[msg.sender];
     }
 
-    function deposit() public payable onlyRegistered {
-        require(msg.value > 0, "Deposit must be greater than 0");
-        balances[msg.sender] += msg.value;
-        emit Deposit(msg.sender, msg.value);
+    // Function to increase the balance of the sender
+    function increaseBalance(uint amount) public {
+        balances[msg.sender] += amount;
+    }
+
+    // Function to decrease the balance of the sender
+    function decreaseBalance(uint amount) public {
+        require(balances[msg.sender] >= amount, "Insufficient balance");
+        balances[msg.sender] -= amount;
     }
 }
+
 // DYASTIN // 
